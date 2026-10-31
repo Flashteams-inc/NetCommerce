@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  The kernel's domain base classes, mapped here so the domain itself stays free
+  of persistence annotations, as the .NET kernel configures EF Core outside it:
+  an entity's identity is its id; the domain events it collects are never stored.
+  An aggregate's version is not mapped yet: in .NET it is PostgreSQL's xmin
+  system column (Npgsql's row version), which Hibernate cannot validate or write
+  as a plain column; it is mapped when the first aggregate is ported.
+-->
+<entity-mappings xmlns="https://jakarta.ee/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence/orm https://jakarta.ee/xml/ns/persistence/orm/orm_3_1.xsd"
+                 version="3.1">
+    <mapped-superclass class="com.netcommerce.kernel.core.domain.Entity" access="FIELD">
+        <attributes>
+            <id name="id"/>
+            <transient name="domainEvents"/>
+        </attributes>
+    </mapped-superclass>
+    <mapped-superclass class="com.netcommerce.kernel.core.domain.AggregateRoot" access="FIELD">
+        <attributes>
+            <transient name="version"/>
+        </attributes>
+    </mapped-superclass>
+</entity-mappings>
