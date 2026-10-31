@@ -5,6 +5,18 @@ spring:
     compose:
       # Only the local profile starts the containers (application-local.yml).
       enabled: false
+  flyway:
+    # Flyway owns the schema from here on, in place of the EF Core migrations.
+    # An existing database is marked baselined at version 1 (the EF Core schema,
+    # V1) and gets only the later versions; an empty one is built from V1.
+    baseline-on-migrate: true
+    baseline-version: 1
+    baseline-description: EF Core schema
+    # The EF Core tables live in the contexts' schemas, not in public: Flyway
+    # must look at all of them to see that a database is not empty. V1 creates
+    # them in an empty database, so Flyway does not.
+    schemas: public,catalog,finance,inventory,ordering,payments,shipping
+    create-schemas: false
   datasource:
     url: ${NETCOMMERCE_DB_URL:jdbc:postgresql://localhost:5432/netcommerce}
     username: ${NETCOMMERCE_DB_USER:postgres}
