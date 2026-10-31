@@ -1,0 +1,95 @@
+# The local environment the .NET AppHost (src/NetCommerce.AppHost) stands up
+# with Aspire, for the Java api: PostgreSQL (one database per context, as the
+# AppHost creates them), Redis, Keycloak with the development realm, Meilisearch,
+# Seq and Azurite. Every image is pinned.
+#
+#   docker compose up -d                      (from java/)
+#   mvn -pl api spring-boot:run -Dspring-boot.run.profiles=local
+#
+# The local profile also starts this file itself (spring-boot-docker-compose).
+# Credentials here are local development values only.
+name: netcommerce
+
+services:
+  postgres:
+    image: postgres:17.6-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./docker/postgres-init.sql:/docker-entrypoint-initdb.d/01-databases.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      retries: 20
+
+  redis:
+    image: redis:7.4.5-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.4.0
+    command: ["start-dev", "--import-realm"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_FEATURES: token-exchange,admin-fine-grained-authz
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: postgres
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+    ports:
+      - "8180:8080"
+    volumes:
+      # The development realm the AppHost imports: its users, clients and test
+      # client. tools/keycloak/netcommerce-realm.json is the production
+      # candidate derived from it (no users), so it is not imported here.
+      - ../src/NetCommerce.AppHost/realms/netcommerce-realm.json:/opt/keycloak/data/import/netcommerce-realm.json:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.16.0
+    environment:
+      MEILI_MASTER_KEY: netcommerce-local-master-key
+      MEILI_NO_ANALYTICS: "true"
+    ports:
+      - "7700:7700"
+    volumes:
+      - meilisearch-data:/meili_data
+
+  seq:
+    image: datalust/seq:2025.2
+    environment:
+      ACCEPT_EULA: "Y"
+      SEQ_FIRSTRUN_NOAUTHENTICATION: "true"
+    ports:
+      - "5341:80"
+    volumes:
+      - seq-data:/data
+
+  azurite:
+    image: mcr.microsoft.com/azure-storage/azurite:3.35.0
+    command: ["azurite", "--blobHost", "0.0.0.0", "--queueHost", "0.0.0.0", "--tableHost", "0.0.0.0", "--skipApiVersionCheck"]
+    ports:
+      - "10000:10000"
+      - "10001:10001"
+      - "10002:10002"
+    volumes:
+      - azurite-data:/data
+
+volumes:
+  postgres-data:
+  redis-data:
+  meilisearch-data:
+  seq-data:
+  azurite-data:

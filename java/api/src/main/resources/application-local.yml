@@ -1,0 +1,42 @@
+# Local development against java/docker-compose.yml, which this profile starts
+# (spring-boot-docker-compose) unless it is already running. The values match
+# the compose file's local-only credentials.
+spring:
+  docker:
+    compose:
+      enabled: true
+      file: ../docker-compose.yml
+      lifecycle-management: start-only
+  datasource:
+    url: jdbc:postgresql://localhost:5432/netcommerce
+    username: postgres
+    password: postgres
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/realms/netcommerce
+
+netcommerce:
+  meilisearch:
+    url: http://localhost:7700
+    master-key: netcommerce-local-master-key
+  # One database per bounded context, as the AppHost has them.
+  databases:
+    catalog: jdbc:postgresql://localhost:5432/catalog
+    ordering: jdbc:postgresql://localhost:5432/ordering
+    inventory: jdbc:postgresql://localhost:5432/inventory
+    payments: jdbc:postgresql://localhost:5432/payments
+    finance: jdbc:postgresql://localhost:5432/finance
+    shipping: jdbc:postgresql://localhost:5432/shipping
+  blob-storage:
+    connection-string: DefaultEndpointsProtocol=http;AccountName=devstoreaccount1;AccountKey=Eby8vdM02xNOcqFlqUwJPLlmEtlCDXJ1OUzFT50uSRZ6IFsuFq2UVErCz4I6tq/K1SZFPTOtr/KBHBeksoGMGw==;BlobEndpoint=http://localhost:10000/devstoreaccount1;
+  seq:
+    url: http://localhost:5341
+  auth:
+    audience: netcommerce-api
+    client-id: netcommerce-api

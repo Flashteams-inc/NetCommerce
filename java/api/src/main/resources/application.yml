@@ -1,6 +1,10 @@
 spring:
   application:
     name: netcommerce-api
+  docker:
+    compose:
+      # Only the local profile starts the containers (application-local.yml).
+      enabled: false
   datasource:
     url: ${NETCOMMERCE_DB_URL:jdbc:postgresql://localhost:5432/netcommerce}
     username: ${NETCOMMERCE_DB_USER:postgres}
@@ -14,3 +18,8 @@ management:
   endpoint:
     health:
       show-components: always
+
+netcommerce:
+  meilisearch:
+    url: ${MEILISEARCH_URL:http://localhost:7700}
+    master-key: ${MEILISEARCH_MASTER_KEY:}
