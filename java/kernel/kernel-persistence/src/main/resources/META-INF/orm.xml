@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
+  Every entity runs the kernel's listener (audit times, tenant stamping).
   The kernel's domain base classes, mapped here so the domain itself stays free
   of persistence annotations, as the .NET kernel configures EF Core outside it:
   an entity's identity is its id; the domain events it collects are never stored.
@@ -11,6 +12,13 @@
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence/orm https://jakarta.ee/xml/ns/persistence/orm/orm_3_1.xsd"
                  version="3.1">
+    <persistence-unit-metadata>
+        <persistence-unit-defaults>
+            <entity-listeners>
+                <entity-listener class="com.netcommerce.kernel.persistence.KernelEntityListener"/>
+            </entity-listeners>
+        </persistence-unit-defaults>
+    </persistence-unit-metadata>
     <mapped-superclass class="com.netcommerce.kernel.core.domain.Entity" access="FIELD">
         <attributes>
             <id name="id"/>
@@ -20,6 +28,13 @@
     <mapped-superclass class="com.netcommerce.kernel.core.domain.AggregateRoot" access="FIELD">
         <attributes>
             <transient name="version"/>
+        </attributes>
+    </mapped-superclass>
+    <mapped-superclass class="com.netcommerce.kernel.compliance.pii.PiiVaultEntryBase" access="FIELD">
+        <attributes>
+            <basic name="deleted">
+                <column name="IsDeleted"/>
+            </basic>
         </attributes>
     </mapped-superclass>
 </entity-mappings>

@@ -23,7 +23,7 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.netcommerce.kernel.persistence.broken.BrokenTestApplication;
+import com.netcommerce.brokenmappings.schema.BrokenTestApplication;
 import com.netcommerce.kernel.persistence.catalog.CatalogTestApplication;
 import com.netcommerce.kernel.persistence.catalog.Category;
 import com.netcommerce.kernel.persistence.catalog.CategoryId;
@@ -75,10 +75,7 @@ class PersistenceBaseTest {
     @Test
     void aMappingThatDoesNotMatchTheSchemaFailsAtStartup() {
         assertThatThrownBy(() -> new SpringApplicationBuilder(BrokenTestApplication.class)
-                .properties("spring.datasource.url=" + EfCoreSchema.POSTGRES.getJdbcUrl(),
-                        "spring.datasource.username=" + EfCoreSchema.POSTGRES.getUsername(),
-                        "spring.datasource.password=" + EfCoreSchema.POSTGRES.getPassword(),
-                        "spring.main.web-application-type=none")
+                .properties(EfCoreSchema.properties())
                 .run().close())
                 .hasStackTraceContaining("missing column [Title]");
     }

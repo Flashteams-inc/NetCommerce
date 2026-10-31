@@ -1,4 +1,4 @@
-package com.netcommerce.kernel.persistence.broken;
+package com.netcommerce.brokenmappings.schema;
 
 import java.util.UUID;
 

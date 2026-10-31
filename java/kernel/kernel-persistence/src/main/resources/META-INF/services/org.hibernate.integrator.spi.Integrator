@@ -1,0 +1,2 @@
+com.netcommerce.kernel.persistence.SoftDeletion
+com.netcommerce.kernel.persistence.KernelMappingCheck
