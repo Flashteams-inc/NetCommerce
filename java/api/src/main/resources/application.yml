@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: netcommerce-api
+  datasource:
+    url: ${NETCOMMERCE_DB_URL:jdbc:postgresql://localhost:5432/netcommerce}
+    username: ${NETCOMMERCE_DB_USER:postgres}
+    password: ${NETCOMMERCE_DB_PASSWORD:postgres}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-components: always

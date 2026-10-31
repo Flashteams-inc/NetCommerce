@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  NetCommerce on Java: a Spring Boot modular monolith, built beside the .NET
+  solution under src/ until cutover. One Maven module per kernel building block
+  and per bounded context; the api module is the composition root (src/Api).
+  Spring Modulith keeps each context to its published API and events.
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.16</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.netcommerce</groupId>
+    <artifactId>netcommerce</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>NetCommerce</name>
+
+    <properties>
+        <java.version>21</java.version>
+        <spring-modulith.version>1.4.14</spring-modulith.version>
+    </properties>
+
+    <modules>
+        <module>kernel/kernel-core</module>
+        <module>kernel/kernel-compliance</module>
+        <module>kernel/kernel-persistence</module>
+        <module>kernel/kernel-messaging</module>
+        <module>kernel/kernel-security</module>
+        <module>contexts/catalog</module>
+        <module>contexts/basket</module>
+        <module>contexts/media</module>
+        <module>contexts/inventory</module>
+        <module>contexts/shipping</module>
+        <module>contexts/ordering</module>
+        <module>contexts/payments</module>
+        <module>contexts/finance</module>
+        <module>api</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.modulith</groupId>
+                <artifactId>spring-modulith-bom</artifactId>
+                <version>${spring-modulith.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.netcommerce</groupId>
+                <artifactId>kernel-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netcommerce</groupId>
+                <artifactId>kernel-compliance</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netcommerce</groupId>
+                <artifactId>kernel-persistence</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netcommerce</groupId>
+                <artifactId>kernel-messaging</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netcommerce</groupId>
+                <artifactId>kernel-security</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netcommerce</groupId>
+                <artifactId>catalog</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netcommerce</groupId>
+                <artifactId>basket</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netcommerce</groupId>
+                <artifactId>media</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netcommerce</groupId>
+                <artifactId>inventory</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netcommerce</groupId>
+                <artifactId>shipping</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netcommerce</groupId>
+                <artifactId>ordering</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netcommerce</groupId>
+                <artifactId>payments</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.netcommerce</groupId>
+                <artifactId>finance</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+</project>

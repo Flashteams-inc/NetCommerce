@@ -119,3 +119,6 @@ tools/keycloak/netcommerce-realm.prod.json
 .p.log
 .baseline.log
 .probe-db.log
+
+# Java (Maven) build output
+java/**/target/
